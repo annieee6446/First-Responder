@@ -6,8 +6,8 @@
 
 2. [Emmanuel Obaseki]
 
-3. [Brandon Bishop]
+3. [Brandon Bishop](https://github.com/bscottb)
 
 4. [Shecory'n Porter]
 
-5. [Manan Trivedi]
+5. [Manan Trivedi] (https://github.com/manantrivedi98)
