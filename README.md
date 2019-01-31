@@ -4,7 +4,7 @@
 #### Team Members:
 1. [Anli Ji](https://github.com/annieee6446)
 
-2. [Emmanuel Obaseki]
+2. [Emmanuel Obaseki](https://github.com/emmaoba)
 
 3. [Brandon Bishop](https://github.com/bscottb)
 
