@@ -8,6 +8,6 @@
 
 3. [Brandon Bishop](https://github.com/bscottb)
 
-4. [Shecory'n Porter]
+4. [Shecory'n Porter](https://github.com/shecoryn)
 
 5. [Manan Trivedi](https://github.com/manantrivedi98)
