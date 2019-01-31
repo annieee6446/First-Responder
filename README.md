@@ -10,4 +10,4 @@
 
 4. [Shecory'n Porter]
 
-5. [Manan Trivedi] (https://github.com/manantrivedi98)
+5. [Manan Trivedi](https://github.com/manantrivedi98)
