@@ -1,0 +1,4 @@
+#Tue Mar 12 18:53:23 EDT 2019
+base.0=/Users/manantrivedi/Downloads/EmergencyMedicalService/app/build/intermediates/transforms/dexMerger/debug/25
+path.0=classes.dex
+renamed.0=classes.dex

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "31171682891",
+    "firebase_url": "https://emsdatabase-fe6af.firebaseio.com",
+    "project_id": "emsdatabase-fe6af",
+    "storage_bucket": "emsdatabase-fe6af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31171682891:android:eaa506e9f8686e1f",
+        "android_client_info": {
+          "package_name": "com.example.manantrivedi.emergencymedicalservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31171682891-4gega5odrr11k9hfikfqdd3m01rq481f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.manantrivedi.emergencymedicalservice",
+            "certificate_hash": "8bdd0a0acee5c5e8d0c6cdc33bfabdc52cff836c"
+          }
+        },
+        {
+          "client_id": "31171682891-0volv6l8jjpt5h50jt5569mibs06ft7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBODKXQesI9h3THXhFeKRmFweEQjW-nhc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31171682891-0volv6l8jjpt5h50jt5569mibs06ft7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

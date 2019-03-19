@@ -1,0 +1,13 @@
+#Tue Mar 12 18:53:48 EDT 2019
+path.3=classes.dex
+path.2=classes.dex
+path.1=classes.dex
+path.0=classes.dex
+renamed.3=classes4.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+base.3=/Users/manantrivedi/Downloads/EmergencyMedicalService/app/build/intermediates/transforms/dexMerger/debug/30
+base.2=/Users/manantrivedi/Downloads/EmergencyMedicalService/app/build/intermediates/transforms/dexMerger/debug/29
+base.1=/Users/manantrivedi/Downloads/EmergencyMedicalService/app/build/intermediates/transforms/dexMerger/debug/31
+base.0=/Users/manantrivedi/Downloads/EmergencyMedicalService/app/build/intermediates/transforms/dexMerger/debug/28
