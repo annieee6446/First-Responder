@@ -39,6 +39,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     List<Address> addresses;
     public String address;
     public int sendCount = 0;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthStateListner;
 
 
     static {
@@ -116,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         } else {
             //onToggleScreenShare(v);
         }
+       Intent intent =  getIntent();
+       String displayname = intent.getStringExtra("displayName");
+        locationTest.setText(displayname);
         //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         //location =  locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         //   onLocationChanged(location);
@@ -175,20 +187,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     // private void sendSMSmessage(Location location) {
 
+
     private void sendSMSmessage(String address) {
         SmsManager smsManager = SmsManager.getDefault();
         //    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // Need to pull username and emergency contact phone number from database
         //String incidentLocation = formatLocation(location);
-
+        //String usersname = getUsersname();
         smsManager.sendTextMessage("4783978219", null, "TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
                 "Location: " + address, null, null);
         Toast.makeText(getApplicationContext(), "SMS sent.",
                 Toast.LENGTH_LONG).show();
 
+        locationTest.setText("TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
+                "Location: " + address);
+
         return;
 
+    }
+
+    private String getUsersname() {
+     // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userID = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
+      return currentUserDb.orderByChild("name").toString();
     }
 
     //    public String formatLocation(Location location){
@@ -241,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String knownName = addresses.get(0).getFeatureName();
 
 //        locationTest.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-        locationTest.setText(address);
+        //locationTest.setText(address);
         if (sendCount <1){
         sendSMSmessage(address);
         }

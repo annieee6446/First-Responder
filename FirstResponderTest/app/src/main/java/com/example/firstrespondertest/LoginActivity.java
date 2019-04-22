@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthStateListner;
     private Button submit;
     private EditText email, password;
+    private String displayName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,12 @@ public class LoginActivity extends AppCompatActivity {
 //                    // UNSURE (Listens for if the user logs in and the returns to the main page)?
 //                    Intent intent = new Intent(getApplication(), MainActivity.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//
+//                        if (user.getEmail() != null){
+//                            displayName = user.getEmail();
+//                        }
+//                    intent.putExtra("displayName", displayName);
 //                    startActivity(intent);
 //                    finish();
 //                    return;
@@ -62,6 +69,20 @@ public class LoginActivity extends AppCompatActivity {
                         if (!task.isSuccessful()){
                             Toast.makeText(LoginActivity.this, "Invalid Login", Toast.LENGTH_SHORT).show();
                         }
+//                        else{
+//                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//
+                            Intent intent = new Intent(getApplication(), MainActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//
+//                            if (user.getEmail() != null){
+//                                displayName = user.getEmail();
+//                            }
+//                            intent.putExtra("displayName", displayName);
+                            startActivity(intent);
+//                            finish();
+//                        }
                     }
                 });
             }

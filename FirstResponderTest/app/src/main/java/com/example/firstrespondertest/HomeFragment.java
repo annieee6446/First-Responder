@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -32,17 +34,17 @@ public class HomeFragment extends Fragment  {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                if (user != null){
-//                    // UNSURE (Listens for if the user logs in and the returns to the main page)?
-//                    Intent intent = new Intent(getApplication(), MainActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-//                    finish();
-//                    return;
-//                }
                 if (user != null){
-                    //updateUI(user);
+                    // UNSURE (Listens for if the user logs in and the returns to the main page)?
+                    Intent intent = new Intent(getActivity().getApplication(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                   // finish();
+                    return;
                 }
+//                if (user != null){
+//                    //updateUI(user);
+//                }
 
             }
         };
@@ -75,6 +77,15 @@ public class HomeFragment extends Fragment  {
             @Override
             public void onClick(View v) {
                mAuth.getInstance().signOut();
+//
+//                Intent intent = new Intent(getActivity().getApplication(), MainActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//                String noDisplayName = "";
+//                intent.putExtra("displayName", noDisplayName);
+//                startActivity(intent);
+//                getActivity().finish();
+//
             }
         });
 
