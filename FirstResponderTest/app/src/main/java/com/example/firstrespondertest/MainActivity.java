@@ -8,6 +8,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -29,12 +35,15 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
     // every variable for screen record
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 1000;
@@ -49,6 +58,15 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder mMediaRecorder;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_PERMISSIONS = 10;
+    private TextView locationTest;
+    private Location location;
+    private Criteria criteria;
+    private String bestProvider;
+    Geocoder geocoder;
+    List<Address> addresses;
+    public String address;
+    public int sendCount = 0;
+
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -57,38 +75,54 @@ public class MainActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
     // end every variable needed for screen record
+
+    private LocationManager locationManager;
+
     // connects the viewPager and adapter
     FragmentPagerAdapter adapterViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        locationTest = (TextView) findViewById(R.id.locationTest);
 
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
                 .checkSelfPermission(MainActivity.this,
                         Manifest.permission.RECORD_AUDIO) + ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS)
+                Manifest.permission.SEND_SMS) + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) +
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale
                     (MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
                     ActivityCompat.shouldShowRequestPermissionRationale
                             (MainActivity.this, Manifest.permission.RECORD_AUDIO) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.SEND_SMS)) {
+                            Manifest.permission.SEND_SMS) || ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.SEND_SMS},
+                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION},
                         REQUEST_PERMISSIONS);
             }
         } else {
             //onToggleScreenShare(v);
         }
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        //location =  locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        //   onLocationChanged(location);
         // View pagers allow for "multiple activities", called fragments, within one activity
         ViewPager viewPager = findViewById(R.id.viewPager);
+
+        //    final Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 
         adapterViewPager = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
@@ -102,12 +136,15 @@ public class MainActivity extends AppCompatActivity {
 
         mProjectionManager = (MediaProjectionManager) getSystemService
                 (Context.MEDIA_PROJECTION_SERVICE);
-        final Button capture =(Button) findViewById(R.id.captureButton);
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        final Button capture = (Button) findViewById(R.id.captureButton);
 
         capture.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // record video
 
                     initRecorder();
@@ -121,9 +158,11 @@ public class MainActivity extends AppCompatActivity {
                     mMediaRecorder.reset();
                     Log.v(TAG, "Stopping Recording");
                     stopScreenSharing();
-                    sendSMSmessage();
-
+                    //  sendSMSmessage(location);
+//                    sendSMSmessage();
                     capture.setText("Video Saved");
+                   // onLocationChanged(location);
+                    getLocation();
 
 
                 }
@@ -134,16 +173,93 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendSMSmessage() {
+    // private void sendSMSmessage(Location location) {
 
-                    SmsManager smsManager = SmsManager.getDefault();
-                    // Need to pull username and emergency contact phone number from database
-                    smsManager.sendTextMessage("4783978219", null, "TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
-                            "Location:______" , null, null);
-                    Toast.makeText(getApplicationContext(), "SMS sent.",
-                            Toast.LENGTH_LONG).show();
+    private void sendSMSmessage(String address) {
+        SmsManager smsManager = SmsManager.getDefault();
+        //    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-                    return;
+        // Need to pull username and emergency contact phone number from database
+        //String incidentLocation = formatLocation(location);
+
+        smsManager.sendTextMessage("4783978219", null, "TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
+                "Location: " + address, null, null);
+        Toast.makeText(getApplicationContext(), "SMS sent.",
+                Toast.LENGTH_LONG).show();
+
+        return;
+
+    }
+
+    //    public String formatLocation(Location location){
+//        Double longitude = location.getLongitude();
+//        String lon = longitude.toString();
+//        Double latitude = location.getLatitude();
+//        String lat = latitude.toString();
+//        String incidentLocation = "Longitude: " + lon + "  " + "Latitude: " + lat;
+//
+//        return incidentLocation;
+//    }
+    protected void getLocation() {
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        criteria = new Criteria();
+        bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return ;
+        }
+        locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
+
+
+}
+
+    @Override
+    public void onLocationChanged(Location location){
+       // locationTest = (TextView) findViewById(R.id.textview1);
+        double latitude = location.getLatitude();
+        double longitude= location.getLongitude();
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName();
+
+//        locationTest.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+        locationTest.setText(address);
+        if (sendCount <1){
+        sendSMSmessage(address);
+        }
+        sendCount++;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 

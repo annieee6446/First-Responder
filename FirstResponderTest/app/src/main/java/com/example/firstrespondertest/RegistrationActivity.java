@@ -25,7 +25,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListner;
     private Button submitReg;
-    private EditText email, password, name;
+    private EditText email, password, name, contactName, emergencyPhone;
+    //private EditText email, password, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class RegistrationActivity extends AppCompatActivity {
 //                    finish();
 //                    return;
 //                }
+                if (user != null){
+                    //updateUI(user);
+                }
 
             }
         };
@@ -53,6 +57,8 @@ public class RegistrationActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         name = findViewById(R.id.name);
+        contactName = findViewById(R.id.contactName);
+        emergencyPhone = findViewById(R.id.emergencyPhone);
 
 
         submitReg.setOnClickListener(new View.OnClickListener() {
@@ -61,23 +67,34 @@ public class RegistrationActivity extends AppCompatActivity {
                 final String nameString = name.getText().toString();
                 final String emailString = email.getText().toString();
                 final String passwordString = password.getText().toString();
+                final String contactNameString = contactName.getText().toString();
+                final String contactPhoneString = emergencyPhone.getText().toString();
+
                 mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         // notice of Successful Login or not
                         if (!task.isSuccessful()){
                             Toast.makeText(getApplication(), "Invalid Login", Toast.LENGTH_SHORT).show();
                         }else{
+
                             // create child in Database for the user
                             String userID = mAuth.getCurrentUser().getUid();
                             DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
 
                             //Map contains the information email, name. Adds everything at the same time
-                            Map userInfo = new HashMap<>();
-                            userInfo.put("email", emailString);
-                            userInfo.put("name", nameString);
+                            //Map userInfo = new HashMap<>();
+//                            userInfo.put("email", emailString);
+//                            userInfo.put("name", nameString);
+//                            userInfo.put("contact name", contactNameString);
+//                            userInfo.put("contact phone number", contactPhoneString);
 
-                            currentUserDb.updateChildren(userInfo);
+                            currentUserDb.child("email").setValue(emailString);
+                            currentUserDb.child("name").setValue(nameString);
+                            currentUserDb.child("contact name").setValue(contactNameString);
+                            currentUserDb.child("contact phone number").setValue(contactPhoneString);
+                            //currentUserDb.updateChildren(userInfo);
 
                         }
 

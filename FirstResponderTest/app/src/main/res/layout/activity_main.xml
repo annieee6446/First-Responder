@@ -18,5 +18,13 @@
         android:layout_gravity="bottom"
         android:text="HOLD" />
 
+    <TextView
+        android:id="@+id/locationTest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+
+        android:text="test" />
+
 
 </FrameLayout>

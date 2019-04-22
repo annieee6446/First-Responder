@@ -28,7 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:text="Update Emergency Contact Info" />
-
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Logout" />
    
 
 </TableLayout>

@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -30,7 +31,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
+import java.util.List;
 
+@SuppressWarnings("ALL")
 public class EmergencyFragment extends Fragment implements  SurfaceHolder.Callback{
 
 Camera camera;
@@ -83,8 +86,18 @@ public static EmergencyFragment newInstance(){
 
     //
     camera.setDisplayOrientation(90);
+
+        List<Camera.Size> allSizes = parameters.getSupportedPictureSizes();
+        Camera.Size size = allSizes.get(0); // get top size
+        for (int i = 0; i < allSizes.size(); i++) {
+            if (allSizes.get(i).width > size.width)
+                size = allSizes.get(i);
+        }
+//set max Picture Size
+    parameters.setPictureSize(size.width, size.height);
+
     parameters.setPreviewFrameRate(30);
-    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+   // parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
 
     camera.setParameters(parameters);
         try {
