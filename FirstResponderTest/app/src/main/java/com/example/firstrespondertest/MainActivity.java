@@ -37,14 +37,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -72,9 +67,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     Geocoder geocoder;
     List<Address> addresses;
     public String address;
+    public String usersname;
     public int sendCount = 0;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListner;
+
 
 
     static {
@@ -94,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        locationTest = (TextView) findViewById(R.id.locationTest);
-
-
+        //Used to test what the TEXT looks like in an emulator
+       //locationTest = (TextView) findViewById(R.id.locationTest);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        //Get Permissions
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
                 .checkSelfPermission(MainActivity.this,
@@ -123,19 +120,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         REQUEST_PERMISSIONS);
             }
         } else {
-            //onToggleScreenShare(v);
         }
-       Intent intent =  getIntent();
-       String displayname = intent.getStringExtra("displayName");
-        locationTest.setText(displayname);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-        //location =  locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-        //   onLocationChanged(location);
+
+        mAuth = FirebaseAuth.getInstance();
+
+//        Intent intent =  getIntent();
+//       String displayname = intent.getStringExtra("displayName");
+//        locationTest.setText(displayname);
+
         // View pagers allow for "multiple activities", called fragments, within one activity
         ViewPager viewPager = findViewById(R.id.viewPager);
-
-        //    final Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-
         adapterViewPager = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
         viewPager.setCurrentItem(0);
@@ -145,83 +139,72 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mScreenDensity = metrics.densityDpi;
 
         mMediaRecorder = new MediaRecorder();
-
         mProjectionManager = (MediaProjectionManager) getSystemService
                 (Context.MEDIA_PROJECTION_SERVICE);
 
+        //Converts Lat and Long into address
         geocoder = new Geocoder(this, Locale.getDefault());
 
         final Button capture = (Button) findViewById(R.id.captureButton);
-
         capture.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // record video
-
                     initRecorder();
                     shareScreen();
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    //record video for an additional minute
                     //send location
                     // contact emergency contacts
-
+                    //Stop the recording
                     mMediaRecorder.stop();
                     mMediaRecorder.reset();
                     Log.v(TAG, "Stopping Recording");
                     stopScreenSharing();
-                    //  sendSMSmessage(location);
-//                    sendSMSmessage();
                     capture.setText("Video Saved");
-                   // onLocationChanged(location);
+                   // get location which calls sendSMSmessage within
                     getLocation();
-
-
                 }
-
                 return true;
             }
         });
-
     }
-
-    // private void sendSMSmessage(Location location) {
-
 
     private void sendSMSmessage(String address) {
         SmsManager smsManager = SmsManager.getDefault();
-        //    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // Need to pull username and emergency contact phone number from database
-        //String incidentLocation = formatLocation(location);
-        //String usersname = getUsersname();
-        smsManager.sendTextMessage("4783978219", null, "TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
+                smsManager.sendTextMessage("4783978219", null, "TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
                 "Location: " + address, null, null);
         Toast.makeText(getApplicationContext(), "SMS sent.",
                 Toast.LENGTH_LONG).show();
-
-        locationTest.setText("TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
-                "Location: " + address);
-
+//         Used for testing Text in an emulator
+//        locationTest.setText("TEST MESSAGE. CALL 911! USER has activated an Emergency Beacon: " +
+//                "Location: " + address);
         return;
-
     }
 
-    private String getUsersname() {
-     // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userID = mAuth.getCurrentUser().getUid();
-        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
-      return currentUserDb.orderByChild("name").toString();
-    }
-
-    //    public String formatLocation(Location location){
-//        Double longitude = location.getLongitude();
-//        String lon = longitude.toString();
-//        Double latitude = location.getLatitude();
-//        String lat = latitude.toString();
-//        String incidentLocation = "Longitude: " + lon + "  " + "Latitude: " + lat;
 //
-//        return incidentLocation;
+//
+//  Eventual Database pulling functionality
+//    private String getUsersname() {
+//     // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        String userID = mAuth.getCurrentUser().getUid();
+//        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
+////String textName = currentUserDb.orderByChild("name").toString();
+//        //final String usersname;
+//      //  usersname = currentUserDb.orderByChild("name").toString();
+//        currentUserDb.child("name").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//              usersname = dataSnapshot.getValue().toString();
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//      return usersname;
 //    }
     protected void getLocation() {
 
@@ -230,23 +213,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return ;
+                 return ;
         }
         locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
-
-
 }
 
     @Override
     public void onLocationChanged(Location location){
-       // locationTest = (TextView) findViewById(R.id.textview1);
         double latitude = location.getLatitude();
         double longitude= location.getLongitude();
 
@@ -257,14 +230,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = addresses.get(0).getLocality();
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
-        String postalCode = addresses.get(0).getPostalCode();
-        String knownName = addresses.get(0).getFeatureName();
-
-//        locationTest.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-        //locationTest.setText(address);
+        // Ugly way of stopping infinite texts
         if (sendCount <1){
         sendSMSmessage(address);
         }
@@ -301,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-            //Not saving the video
+            //Save to SD card
             mMediaRecorder.setOutputFile(Environment
                     .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM
                             ) + "/Camera/video.mp4");
@@ -323,8 +289,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         mVirtualDisplay.release();
-        //mMediaRecorder.release(); //If used: mMediaRecorder object cannot
-        // be reused again
         destroyMediaProjection();
     }
     @Override

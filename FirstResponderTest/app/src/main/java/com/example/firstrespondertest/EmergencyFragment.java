@@ -2,34 +2,18 @@
 
 package com.example.firstrespondertest;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.display.VirtualDisplay;
-import android.media.MediaRecorder;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.Size;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -93,7 +77,7 @@ public static EmergencyFragment newInstance(){
             if (allSizes.get(i).width > size.width)
                 size = allSizes.get(i);
         }
-//set max Picture Size
+   //set max Picture Size
     parameters.setPictureSize(size.width, size.height);
 
     parameters.setPreviewFrameRate(30);

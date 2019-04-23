@@ -26,7 +26,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthStateListner;
     private Button submitReg;
     private EditText email, password, name, contactName, emergencyPhone;
-    //private EditText email, password, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +36,9 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                if (user != null){
-//                    // UNSURE (Listens for if the user logs in and the returns to the main page)?
-//                    Intent intent = new Intent(getApplication(), MainActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-//                    finish();
-//                    return;
-//                }
-                if (user != null){
-                    //updateUI(user);
-                }
 
+                if (user != null){
+                }
             }
         };
 
@@ -83,26 +73,15 @@ public class RegistrationActivity extends AppCompatActivity {
                             String userID = mAuth.getCurrentUser().getUid();
                             DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
 
-                            //Map contains the information email, name. Adds everything at the same time
-                            //Map userInfo = new HashMap<>();
-//                            userInfo.put("email", emailString);
-//                            userInfo.put("name", nameString);
-//                            userInfo.put("contact name", contactNameString);
-//                            userInfo.put("contact phone number", contactPhoneString);
-
                             currentUserDb.child("email").setValue(emailString);
                             currentUserDb.child("name").setValue(nameString);
                             currentUserDb.child("contact name").setValue(contactNameString);
                             currentUserDb.child("contact phone number").setValue(contactPhoneString);
-                            //currentUserDb.updateChildren(userInfo);
-
                         }
-
                     }
                 });
                 Intent intent = new Intent(getApplication(),MainActivity.class);
                 startActivity(intent);
-               // return;
             }
 
         });
