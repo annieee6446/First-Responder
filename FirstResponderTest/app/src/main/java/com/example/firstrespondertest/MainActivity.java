@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Used to test what the TEXT looks like in an emulator
-       //locationTest = (TextView) findViewById(R.id.locationTest);
+  //     locationTest = (TextView) findViewById(R.id.locationTest);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         //Get Permissions
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 //        Intent intent =  getIntent();
 //       String displayname = intent.getStringExtra("displayName");
-//        locationTest.setText(displayname);
+//       locationTest.setText(displayname);
 
         // View pagers allow for "multiple activities", called fragments, within one activity
         ViewPager viewPager = findViewById(R.id.viewPager);
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mMediaRecorder = new MediaRecorder();
         mProjectionManager = (MediaProjectionManager) getSystemService
                 (Context.MEDIA_PROJECTION_SERVICE);
-
         //Converts Lat and Long into address
         geocoder = new Geocoder(this, Locale.getDefault());
 
@@ -233,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Ugly way of stopping infinite texts
         if (sendCount <1){
         sendSMSmessage(address);
+
         }
         sendCount++;
     }
